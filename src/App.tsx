@@ -16,27 +16,9 @@ function App() {
     { id: 5, description: "Movies", amount: 15, category: "Entertainment" },
   ]);
 
-  let total = 0;
-  expenses.map((obj) => (total += obj.amount));
-
-  const handleDelete = (idx: number) => {
-    setExpenses(expenses.filter((expense, index) => index !== idx));
-  };
-
-  const expenseList = expenses.map((obj, index) => (
-    <tr key={index}>
-      <td>{obj.description}</td>
-      <td>${obj.amount}</td>
-      <td>{obj.category}</td>
-      <td>
-        <button onClick={() => handleDelete(index)}>Delete</button>
-      </td>
-    </tr>
-  ));
-
   return (
     <>
-      <Category expenseList={expenseList} total={total} />
+      <Category expenses={expenses} setExpenses={setExpenses} />
     </>
   );
 }
