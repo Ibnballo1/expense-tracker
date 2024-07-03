@@ -1,7 +1,7 @@
 import { ChangeEvent, useState } from "react";
 
 interface Expense {
-  id: number;
+  id: string;
   description: string;
   amount: number;
   category: string;
@@ -28,7 +28,7 @@ function Category({ expenses, setExpenses }: Props) {
 
   filteredExpense.map((obj) => (total += obj.amount));
 
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: string) => {
     setExpenses(expenses.filter((expense) => expense.id !== id));
   };
 
@@ -46,7 +46,7 @@ function Category({ expenses, setExpenses }: Props) {
   return (
     <div>
       <select name="expenses" value={selectedExpense} onChange={handleOnChange}>
-        <option value="all">All</option>
+        <option value="all">All categories</option>
         <option value="Entertainment">Entertainment</option>
         <option value="Utilities">Utilities</option>
         <option value="Groceries">Groceries</option>
