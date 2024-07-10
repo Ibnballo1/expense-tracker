@@ -1,39 +1,38 @@
 import { useState } from "react";
-import Category from "./components/Category";
+import ExpenseList from "./components/ExpenseList";
 import Form from "./components/Form";
 import "bootstrap/dist/css/bootstrap.css";
+import SelectedCategory from "./components/SelectedCategory";
+
+export const selectedOptions = ["Entertainment", "Utilities", "Groceries"];
 
 function App() {
   const [expenses, setExpenses] = useState([
     { id: "0", description: "Milk", amount: "5", category: "Groceries" },
-    {
-      id: "1",
-      description: "Electricity",
-      amount: "100",
-      category: "Utilities",
-    },
-    { id: "2", description: "Eggs", amount: "10", category: "Groceries" },
-    { id: "3", description: "Milk", amount: "5", category: "Groceries" },
-    {
-      id: "4",
-      description: "Electric Kettle",
-      amount: "40",
-      category: "Utilities",
-    },
-    { id: "5", description: "Movies", amount: "15", category: "Entertainment" },
   ]);
+  const [selectedCategory, setSelectedCategory] = useState("all");
 
   const handleDelete = (id: string) => {
     setExpenses(expenses.filter((expense) => expense.id !== id));
   };
 
+  const filteredExpense = expenses.filter((expense) =>
+    selectedCategory === "all"
+      ? expense.category
+      : expense.category === selectedCategory
+  );
+
   return (
     <div className="m-3">
       <Form expenses={expenses} setExpenses={setExpenses} />
-      <Category
-        expenses={expenses}
+      <SelectedCategory
+        selectedCategory={selectedCategory}
+        setSelectedCategory={setSelectedCategory}
+      />
+      <ExpenseList
         setExpenses={setExpenses}
         onDelete={handleDelete}
+        filteredExpense={filteredExpense}
       />
     </div>
   );
