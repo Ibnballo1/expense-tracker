@@ -1,14 +1,15 @@
 import { useState } from "react";
 import ExpenseList from "./components/ExpenseList";
 import Form from "./components/Form";
+import uuid from "react-uuid";
 import "bootstrap/dist/css/bootstrap.css";
 import SelectedCategory from "./components/SelectedCategory";
 
-export const selectedOptions = ["Entertainment", "Utilities", "Groceries"];
+export const categories = ["Entertainment", "Utilities", "Groceries"];
 
 function App() {
   const [expenses, setExpenses] = useState([
-    { id: "0", description: "Milk", amount: "5", category: "Groceries" },
+    { id: "", description: "", amount: 0, category: "" },
   ]);
   const [selectedCategory, setSelectedCategory] = useState("all");
 
@@ -24,7 +25,11 @@ function App() {
 
   return (
     <div className="m-3">
-      <Form expenses={expenses} setExpenses={setExpenses} />
+      <Form
+        onSubmit={(expense) =>
+          setExpenses([...expenses, { ...expense, id: uuid() }])
+        }
+      />
       <SelectedCategory
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}

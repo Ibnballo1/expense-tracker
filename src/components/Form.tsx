@@ -1,83 +1,91 @@
-import { useState } from "react";
-import uuid from "react-uuid";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { categories } from "../App";
 
-interface Expense {
-  id: string;
-  description: string;
-  amount: string;
-  category: string;
-}
+const schema = z.object({
+  description: z
+    .string()
+    .min(3, { message: "Description should be at least 3 characters." })
+    .max(50),
+  amount: z
+    .number({ invalid_type_error: "Amount is required." })
+    .min(0)
+    .max(100_000),
+  category: z.enum(["Entertainment", "Utilities", "Groceries"], {
+    errorMap: () => ({ message: "Category is required." }),
+  }),
+});
+
+type ExpenseFormData = z.infer<typeof schema>;
 
 interface Props {
-  expenses: Expense[];
-  setExpenses: (expenses: Expense[]) => void;
+  onSubmit: (data: ExpenseFormData) => void;
 }
 
-function Form({ expenses, setExpenses }: Props) {
-  const [inputValue, setInputValue] = useState({
-    description: "",
-    amount: "",
-    category: "",
-  });
-
-  const handleSubmit = (event: any) => {
-    event.preventDefault();
-    const newExpense = {
-      id: uuid(),
-      ...inputValue,
-    };
-    setExpenses([...expenses, newExpense]);
-    setInputValue({ description: "", amount: "", category: "" });
-  };
+function Form({ onSubmit }: Props) {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<ExpenseFormData>({ resolver: zodResolver(schema) });
 
   return (
-    <form className="row g-3 mb-3" onSubmit={handleSubmit}>
-      <div className="mb-3">
+    <form
+      className="row g-3 mb-3"
+      onSubmit={handleSubmit((data) => {
+        onSubmit(data);
+        reset();
+      })}
+    >
+      <div className="mb">
         <label htmlFor="description" className="form-label">
           Description
         </label>
         <input
           className="form-control form-control-lg"
           type="text"
+          {...register("description")}
           id="description"
-          minLength={3}
-          value={inputValue.description}
-          onChange={(e) =>
-            setInputValue({ ...inputValue, description: e.target.value })
-          }
-          required
         />
+        {errors.description && (
+          <p className="text-danger">{errors.description.message}</p>
+        )}
       </div>
-      <div className="mb-3">
+      <div className="mb">
         <label htmlFor="amt" className="form-label">
           Amount
         </label>
         <input
           className="form-control form-control-lg"
           type="text"
+          {...register("amount", { valueAsNumber: true })}
           id="amt"
-          value={inputValue.amount}
-          onChange={(e) =>
-            setInputValue({ ...inputValue, amount: e.target.value })
-          }
-          required
         />
+        {errors.amount && (
+          <p className="text-danger">{errors.amount.message}</p>
+        )}
       </div>
-      <div className="mb-3">
+      <div className="mb">
         <label htmlFor="category" className="form-label">
           Category
         </label>
-        <input
-          className="form-control form-control-lg"
-          type="text"
+        <select
+          className="form-select form-select-lg"
+          {...register("category")}
           id="category"
-          minLength={3}
-          value={inputValue.category}
-          onChange={(e) =>
-            setInputValue({ ...inputValue, category: e.target.value })
-          }
-          required
-        />
+        >
+          <option value="all">All Categories</option>
+          {categories.map((category) => (
+            <option key={category} value={category}>
+              {category}
+            </option>
+          ))}
+        </select>
+        {errors.category && (
+          <p className="text-danger">{errors.category.message}</p>
+        )}
       </div>
       <div>
         <input type="submit" className="btn btn-primary btn-lg" />

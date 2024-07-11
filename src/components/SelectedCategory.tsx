@@ -1,5 +1,5 @@
 import { ChangeEvent } from "react";
-import { selectedOptions } from "../App";
+import { categories } from "../App";
 
 interface Props {
   selectedCategory: string;
@@ -20,9 +20,9 @@ const SelectedCategory = ({ selectedCategory, setSelectedCategory }: Props) => {
         onChange={handleOnChange}
       >
         <option value="all">All Categories</option>
-        {selectedOptions.map((option) => (
-          <option key={option} value={option}>
-            {option}
+        {categories.map((category) => (
+          <option key={category} value={category}>
+            {category}
           </option>
         ))}
       </select>

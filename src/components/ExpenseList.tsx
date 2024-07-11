@@ -1,7 +1,7 @@
 interface Expense {
   id: string;
   description: string;
-  amount: string;
+  amount: number;
   category: string;
 }
 
@@ -13,7 +13,7 @@ interface Props {
 
 function ExpenseList({ onDelete, filteredExpense }: Props) {
   let total = 0;
-  filteredExpense.map((obj) => (total += Number(obj.amount)));
+  filteredExpense.map((obj) => (total += obj.amount));
 
   const expenseList = filteredExpense.map((obj: Expense) => (
     <tr key={obj.id}>
